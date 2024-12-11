@@ -15,6 +15,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    profileImage: {
+        type: String,
+    },
     phone: {
         type: String,
     },
@@ -41,6 +44,10 @@ const UserSchema = new mongoose.Schema({
     },
     resetPasswordExpire: {
         type: String,
+    },
+    role: {
+        type: String,
+        default: 'user',
     },
 
 }, { timestamps: true });

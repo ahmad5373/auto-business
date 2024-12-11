@@ -66,15 +66,15 @@ const getUserWithId = async (req, res) => {
 
 const editUser = async (req, res) => {
     const { id } = req.params;
-    const { name, email, phone, gender, address, city, fcm } = req.body;
+    const { dealerName, email, phone, profileImage,  streetAddress, street2Address, zipCode, city, country, description } = req.body;
     try {
-        const updatedUser = await DealershipUser.findByIdAndUpdate(id, { name, email, phone, gender, address, city, fcm }, { new: true, runValidators: true });
+        const updatedUser = await DealershipUser.findByIdAndUpdate(id, { dealerName, email, phone, streetAddress, street2Address, zipCode, profileImage, city, country,description}, { new: true, runValidators: true });
         if (!updatedUser) {
             return sendResponse(res, 404, "Dealership not found");
         }
         return sendResponse(res, 200, "Dealership updated successfully", [], updatedUser);
     } catch (error) {
-        return sendResponse(res, 500, `Error updating user: ${error.message}`);
+        return sendResponse(res, 500, `Error updating dealer user: ${error.message}`);
     }
 };
 

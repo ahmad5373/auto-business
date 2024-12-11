@@ -11,6 +11,9 @@ const DealershipUserSchema = new mongoose.Schema({
         lowercase: true,
         trim: true,
     },
+    profileImage: {
+        type: String,
+    },
     password: {
         type: String,
         required: true,
@@ -41,6 +44,10 @@ const DealershipUserSchema = new mongoose.Schema({
     },
     description: {
         type: String,
+    },
+    role: {
+        type: String,
+        default: 'dealershipUser',
     },
 
 }, { timestamps: true });

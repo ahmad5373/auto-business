@@ -66,9 +66,9 @@ const getUserWithId = async (req, res) => {
 
 const editUser = async (req, res) => {
     const { id } = req.params;
-    const { name, email, phone, gender, address, city, fcm } = req.body;
+    const { name, email, phone, profileImage, gender, address, city, fcm } = req.body;
     try {
-        const updatedUser = await User.findByIdAndUpdate(id, { name, email, phone, gender, address, city, fcm }, { new: true, runValidators: true });
+        const updatedUser = await User.findByIdAndUpdate(id, { name, email, phone, profileImage, gender, address, city, fcm }, { new: true, runValidators: true });
         if (!updatedUser) {
             return sendResponse(res, 404, "User not found");
         }

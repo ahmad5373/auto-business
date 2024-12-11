@@ -55,6 +55,15 @@ const createBlogValidation = [
 ]
 
 
+const createCarValidation = [
+  body('basicData.make').not().isEmpty().withMessage("Make is required"),
+  body('basicData.model').not().isEmpty().withMessage("Model is required"),
+  body('basicData.mileage').not().isEmpty().withMessage("Valid mileage is required"),
+  body('sellerDetails.name').not().isEmpty().withMessage("Seller name is required"),
+  body('sellerDetails.email').not().isEmpty().isEmail().withMessage("Seller Valid email is required"),
+  body('imagesAndDescription.description').not().isEmpty().withMessage("description is required"),
+]
+
 module.exports = {
   requestValidation,
   createUserValidation,
@@ -62,4 +71,5 @@ module.exports = {
   createMessageValidation,
   subscribeNewsletterValidation,
  createBlogValidation,
+ createCarValidation
 };
