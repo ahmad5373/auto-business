@@ -1,43 +1,62 @@
 const mongoose = require('mongoose');
 
 const carSchema = new mongoose.Schema({
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    index: true
+  },
+  sold: { type: Boolean, default: false },
+  saveAds: {
+    save: { type: Boolean, default: false },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      index: true
+    }
+  },
   basicData: {
     make: { type: String, required: true },
     model: { type: String, required: true },
     variant: { type: String },
-    vehicleType: { type: String },
-    mileage: { type: Number, required: true },
-    huAtLeast: { type: Boolean },
-    roadworthy: { type: Boolean },
     firstRegistration: { type: String },
+    mileage: { type: Number, required: true },
     previousOwners: { type: Number },
-    condition: { type: String},
-    type: { type: String },
-    availabilty: { type: String }
+    fuelType: { type: String, },
+    power: { type: Number },
+    transmission: { type: String },
+    paymentType: { type: String }, 
+    roadworthy: { type: Boolean },
+    availabilty: { type: String },
+    country: {type:String},
+    city: {type: String}
+
   },
   paymentDetails: {
     price: { type: Number },
-    paymentType: { type: String},
     monthlyPayment: { type: String },
   },
   technicalData: {
-    fuelType: { type: String,},
-    power: { type: Number },
+    type: { type: String },
+    vehicleNumber: { type: String },
+    category: { type: String },
     cubicCapacity: { type: Number },
-    transmission: { type: String },
     fuelConsumption: { type: Number },
     emissionSticker: { type: String, },
-    emissionClass: { type: String,},
-    category: { type: String },
-    vehicleNumber: { type: String },
+    emissionClass: { type: String, },
+    huAtLeast: { type: Boolean },
+    condition: { type: String },
     seats: { type: Number },
     doors: { type: Number },
+    airConditioning: { type: String, },
+    parkingSensors: [String]
+    
   },
   exterior: {
     exteriorColor: { type: String },
     trailerCoupling: { type: String },
-    parkingSenser: [String],
-    cruiseControl: { type: String},
+    parkingSensors: [String],
+    cruiseControl: { type: String },
     otherFeatures: [String]
   },
   interior: {
@@ -51,10 +70,10 @@ const carSchema = new mongoose.Schema({
   sellerDetails: {
     name: { type: String, required: true },
     email: { type: String, required: true },
-    gender: { type: String},
+    gender: { type: String },
     phone: {
       countryCode: { type: String },
-      number: { type: String},
+      number: { type: String },
     },
     address: {
       street: { type: String },
@@ -68,16 +87,6 @@ const carSchema = new mongoose.Schema({
     description: { type: String, required: true },
     images: [{ type: String }],
   },
-  additionalInfo: {
-    registrationDate: { type: String },
-    distanceWarningSystem: { type: Boolean },
-    headUpDisplay: { type: Boolean },
-    hillStartAssist: { type: Boolean },
-    leaseDetails: {
-      duration: { type: String },
-      totalAmount: { type: Number },
-    },
-  },
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Car', carSchema);
