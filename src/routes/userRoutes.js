@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, loginUser, getAllUsers, deleteUser, editUser, getUserWithId, forgotPassword, resetPassword, updatePassword } = require('../controllers/userController');
+const { registerUser, loginUser, getAllUsers, deleteUser, editUser, getUserWithId, forgotPassword, resetPassword, updatePassword, sendContactForm } = require('../controllers/userController');
 const { protected } = require('../middleware/authenticate');
 const { createUserValidation, requestValidation, loginValidation } = require('../validations');
 
@@ -14,5 +14,7 @@ router.delete('/:id', protected,  deleteUser);
 router.post("/forgot-password" ,  forgotPassword);
 router.post("/reset-password" , resetPassword);
 router.post("/change-password" , updatePassword);
+router.post("/contact-email" , sendContactForm);
+
 
 module.exports = router;
