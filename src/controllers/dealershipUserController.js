@@ -115,7 +115,7 @@ const forgotPassword = async (req, res) => {
     <html>
     <body>
     <center><img src="http://3.16.10.119/assets/admin/img/logo.png" height="100"></center>
-    <center><h1 style="color:#B454FF">Forget Password Otp Code</h1></center>
+    <center><h1 style="color:#0000FF">Forget Password Otp Code</h1></center>
     <br>
     <center><h2>${userData.otp}</h2></center>
     </body>
