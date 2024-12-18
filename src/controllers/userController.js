@@ -182,47 +182,79 @@ const updatePassword = async (req, res) => {
 
 const sendContactForm = async (req, res) => {
     const { contactEmail, carDetails, firstName, lastName, userEmail, message } = req.body;
-    const subject = "New Contact Form Submission";
+    const subject = `Inquiry About the ${carDetails.make || 'N/A'} ${carDetails.model || 'N/A'} Listing`;
     const html = `
     <!DOCTYPE html>
-    <html>
+   <html lang="en">
     <head>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-            }
-            h3 {
-                color: #B454FF;
-            }
-            .details {
-                margin: 20px 0;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                background-color: #f9f9f9;
-            }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${subject}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #B454FF;
+        }
+        h3 {
+            color: #5A2DFF;
+        }
+        .details {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .carPrice {
+            width: 100%;
+        }
+        .carPrice td {
+            padding: 5px;
+            text-align: left;
+        }
+        .carPrice .makeModel {
+            font-weight: bold;
+        }
+        p {
+            margin: 5px 0;
+        }
         </style>
     </head>
     <body>
-        <h2>New Contact Form Submission</h2>
         <p><strong>Name:</strong> ${`${firstName} ${lastName}`}</p>
         <p><strong>Email:</strong> ${userEmail}</p>
+
         <h3>Car Details:</h3>
         <div class="details">
-            <p><strong>First Registration:</strong> ${carDetails.firstRegistration || 'N/A'}</p>
-            <p><strong>Condition:</strong> ${carDetails.condition || 'N/A'}</p>
-            <p><strong>Mileage:</strong> ${carDetails.mileage || 'N/A'}</p>
-            <p><strong>Transmission:</strong> ${carDetails.transmission || 'N/A'}</p>
-            <p><strong>Fuel Type:</strong> ${carDetails.fuelType || 'N/A'}</p>
-            <p><strong>Fuel Consumption:</strong> ${carDetails.fuelConsumption || 'N/A'}</p>
+            <table class="carPrice" cellspacing="0" cellpadding="5">
+                <tr>
+                    <td class="makeModel">${carDetails.make || 'N/A'} ${carDetails.model || 'N/A'}</td>
+                    <td><strong>Price:</strong> ${carDetails.price || 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td><strong>First Registration:</strong> ${carDetails.firstRegistration || 'N/A'}</td>
+                    <td><strong>Condition:</strong> ${carDetails.condition || 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td><strong>Mileage:</strong> ${carDetails.mileage || 'N/A'}</td>
+                    <td><strong>Transmission:</strong> ${carDetails.transmission || 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td><strong>Fuel Type:</strong> ${carDetails.fuelType || 'N/A'}</td>
+                    <td><strong>Fuel Consumption:</strong> ${carDetails.fuelConsumption || 'N/A'}</td>
+                </tr>
+            </table>
         </div>
-        <p><strong>Message:</strong></p>
+
+        <h3>Message:</h3>
         <p>${message}</p>
-    </body>
-    </html>
-    `;
+        </body>
+        </html>
+            `;
 
     try {
         await sendMail(contactEmail, subject, html, userEmail);

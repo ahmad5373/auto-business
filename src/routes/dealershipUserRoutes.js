@@ -5,7 +5,7 @@ const { createUserValidation, requestValidation, loginValidation } = require('..
 
 const router = express.Router();
 
-router.post('/register', createUserValidation, requestValidation, registerUser);
+router.post('/register',  registerUser);
 router.post('/login', loginValidation, requestValidation, loginUser);
 router.get('/get-dealership', protected,  getAllUsers);
 router.get('/:id', protected,  getUserWithId);

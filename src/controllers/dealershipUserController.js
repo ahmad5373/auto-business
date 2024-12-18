@@ -7,18 +7,25 @@ const DealershipUser = require('../models/DealershipUser');
 dotenv.config();
 
 const hashPassword = async (password) => bcrypt.hash(password, 10);
-const findUserByEmail = async (email) => DealershipUser.findOne({ email });
+const findUserByEmail = async (email) => {return DealershipUser.findOne({ 'dealershipInformation.email': email });};
 
 const registerUser = async (req, res) => {
-    const { email, password, } = req.body;
+    const { email, password, } = req.body.dealershipInformation;
     try {
         const existingUser = await findUserByEmail(email);
         if (existingUser) {
             return sendResponse(res, 400, "Dealership already exists");
         }
         const hashedPassword = await hashPassword(password);
-        await DealershipUser.create({ email, password: hashedPassword });
-        return sendResponse(res, 201, "Dealership Registered with Us Successfully",);
+        const dealershipUser = new DealershipUser({
+            ...req.body,
+            dealershipInformation: {
+                ...req.body.dealershipInformation,
+                password: hashedPassword
+            }
+        });
+        await dealershipUser.save();
+        return sendResponse(res, 201, "Dealership Registered Successfully",[] ,dealershipUser);
     } catch (error) {
         return sendResponse(res, 500, `Error creating Dealership: ${error.message}`);
     }
@@ -66,9 +73,9 @@ const getUserWithId = async (req, res) => {
 
 const editUser = async (req, res) => {
     const { id } = req.params;
-    const { dealerName, email, phone, profileImage,  streetAddress, street2Address, zipCode, city, country, description } = req.body;
+    const { dealerName, email, phone, profileImage, streetAddress, street2Address, zipCode, city, country, description } = req.body;
     try {
-        const updatedUser = await DealershipUser.findByIdAndUpdate(id, { dealerName, email, phone, streetAddress, street2Address, zipCode, profileImage, city, country,description}, { new: true, runValidators: true });
+        const updatedUser = await DealershipUser.findByIdAndUpdate(id, { dealerName, email, phone, streetAddress, street2Address, zipCode, profileImage, city, country, description }, { new: true, runValidators: true });
         if (!updatedUser) {
             return sendResponse(res, 404, "Dealership not found");
         }

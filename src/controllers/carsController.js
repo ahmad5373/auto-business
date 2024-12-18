@@ -111,9 +111,7 @@ const getSearchedCars = async (req, res) => {
         if (powerMin && powerMax) query['basicData.power'] = { $gte: powerMin, $lte: powerMax };
         if (fuelType) query['basicData.fuelType'] = fuelType;
 
-        console.log("Query =>", query);
         const searchResults = await Car.find(query);
-        console.log("searchResults =>", searchResults);
 
         if (!searchResults.length) {
             return sendResponse(res, 404, "No cars found for this query");
