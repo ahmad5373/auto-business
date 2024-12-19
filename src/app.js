@@ -11,6 +11,7 @@ const User = require("../src/routes/userRoutes");
 const Dealership = require("../src/routes/dealershipUserRoutes");
 const Car = require("../src/routes/carRoutes");
 const terms = require("../src/routes/terms&conditionRoutes");
+const faqs = require("../src/routes/faqsRoutes");
 
 
 // const corsOptions = {
@@ -37,6 +38,7 @@ app.use("/users", User);
 app.use("/dealership", Dealership);
 app.use("/cars", Car);
 app.use("/terms", terms);
+app.use("/faqs", faqs);
 
 
 module.exports = app;

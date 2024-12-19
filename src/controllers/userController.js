@@ -10,11 +10,14 @@ const hashPassword = async (password) => bcrypt.hash(password, 10);
 const findUserByEmail = async (email) => User.findOne({ email });
 
 const registerUser = async (req, res) => {
-    const { email, password, } = req.body;
+    const { email, password, repeatedPassword } = req.body;
     try {
         const existingUser = await findUserByEmail(email);
         if (existingUser) {
             return sendResponse(res, 400, "User already exists");
+        }
+        if (password !== repeatedPassword) {
+            return sendResponse(res, 400, 'Password and repeated password do not match.');
         }
         const hashedPassword = await hashPassword(password);
         await User.create({ email, password: hashedPassword });

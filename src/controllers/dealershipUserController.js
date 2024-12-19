@@ -9,13 +9,9 @@ dotenv.config();
 const hashPassword = async (password) => bcrypt.hash(password, 10);
 const findUserByEmail = async (email) => {return DealershipUser.findOne({ 'dealershipInformation.email': email });};
 
-const registerUser = async (req, res) => {
-    const { email, password, } = req.body.dealershipInformation;
+const createDealershipUser = async (req, res) => {
+    const { password } = req.body.dealershipInformation;
     try {
-        const existingUser = await findUserByEmail(email);
-        if (existingUser) {
-            return sendResponse(res, 400, "Dealership already exists");
-        }
         const hashedPassword = await hashPassword(password);
         const dealershipUser = new DealershipUser({
             ...req.body,
@@ -30,6 +26,22 @@ const registerUser = async (req, res) => {
         return sendResponse(res, 500, `Error creating Dealership: ${error.message}`);
     }
 };
+
+const registerUser = async(req, res)=>{
+    const { email, password,repeatedPassword } = req.body;
+    try {
+        const existingUser = await findUserByEmail(email);
+        if (existingUser) {
+            return sendResponse(res, 400, "Dealership already exists..");
+        }
+        if (password !== repeatedPassword) {
+            return sendResponse(res, 400, 'Password and repeated password do not match.');
+        }
+        return sendResponse(res, 200, "Dealership is okay to proceed next");
+    } catch (error) {
+        return sendResponse(res, 500, `Error creating Dealership: ${error.message}`);
+    }
+}
 
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -190,6 +202,7 @@ const updatePassword = async (req, res) => {
 
 module.exports = {
     registerUser,
+    createDealershipUser,
     loginUser,
     getAllUsers,
     getUserWithId,
