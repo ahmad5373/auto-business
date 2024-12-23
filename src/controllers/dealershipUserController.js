@@ -7,7 +7,7 @@ const DealershipUser = require('../models/DealershipUser');
 dotenv.config();
 
 const hashPassword = async (password) => bcrypt.hash(password, 10);
-const findUserByEmail = async (email) => {return DealershipUser.findOne({ 'dealershipInformation.email': email });};
+const findUserByEmail = async (email) =>  {return await DealershipUser.findOne({ 'dealershipInformation.email': email });};
 
 const createDealershipUser = async (req, res) => {
     const { password } = req.body.dealershipInformation;
