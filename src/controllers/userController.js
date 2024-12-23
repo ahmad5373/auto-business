@@ -30,16 +30,23 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await findUserByEmail(email);
-        if (!user || !await bcrypt.compare(password, user.password)) {
+        const userData = await findUserByEmail(email);
+        if (!userData || !await bcrypt.compare(password, userData.password)) {
             return sendResponse(res, 401, "Invalid credentials");
         }
-        const token = jwt.sign({ user: user }, process.env.JWT_SECRET, { expiresIn: '30d' });
-        const response = {
-            user: user,
+        const token = jwt.sign({ user: userData }, process.env.JWT_SECRET, { expiresIn: '30d' });
+        const userObj = {
+            name:userData?.name ,
+            email:userData?.email ,
+            role:userData?.role,
+            phone: userData?.phone ,
+            gender:userData?.gender ,
+            address: userData?.address ,
+            city: userData?.city,
             access_token: token
         }
-        return sendResponse(res, 200, "Login Successful", [], response);
+
+        return sendResponse(res, 200, "Login Successful", [], {user:userObj});
     } catch (error) {
         return sendResponse(res, 500, `Error during login: ${error?.message}`);
     }
