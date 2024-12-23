@@ -6,11 +6,11 @@ const { sendResponse } = require('../utility/api');
 const sendMail = require('../middleware/SendMail');
 dotenv.config();
 
-const hashPassword = async (password) => bcrypt.hash(password, 10);
-const findUserByEmail = async (email) => User.findOne({ email });
+const hashPassword = async (password) => await bcrypt.hash(password, 10);
+const findUserByEmail = async (email) => await User.findOne({ email });
 
 const registerUser = async (req, res) => {
-    const { email, password, repeatedPassword } = req.body;
+    const { email, password, repeatedPassword, name, phoneNo, address,  city,   } = req.body;
     try {
         const existingUser = await findUserByEmail(email);
         if (existingUser) {
@@ -20,7 +20,7 @@ const registerUser = async (req, res) => {
             return sendResponse(res, 400, 'Password and repeated password do not match.');
         }
         const hashedPassword = await hashPassword(password);
-        await User.create({ email, password: hashedPassword });
+        await User.create({ email, password: hashedPassword, name, phoneNo, address, city });
         return sendResponse(res, 201, "User Registered with Us Successfully",);
     } catch (error) {
         return sendResponse(res, 500, `Error creating user: ${error.message}`);
