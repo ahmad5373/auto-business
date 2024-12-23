@@ -1,20 +1,5 @@
 const mongoose = require('mongoose');
 
-
-const PhoneSchema = new mongoose.Schema({
-    country: { type: String, },
-    prefix: { type: String, },
-    phoneNumber: { type: String, },
-}, { _id: false });
-
-const AddressSchema = new mongoose.Schema({
-    streetAddress: { type: String },
-    street2Address: { type: String },
-    zipCode: { type: Number },
-    city: { type: String },
-    country: { type: String },
-}, { _id: false });
-
 const DealershipUserSchema = new mongoose.Schema(
     {
         dealershipInformation: {
@@ -27,16 +12,14 @@ const DealershipUserSchema = new mongoose.Schema(
             },
             profileImage: { type: String },
             password: { type: String },
-            phone: [PhoneSchema],
-            address: AddressSchema,
+            streetAddress: { type: String },
+            street2Address: { type: String },
+            zipCode: { type: Number },
+            city: { type: String },
+            country: { type: String },
         },
-        supportContact: {
-            contactName: { type: String },
-            formOfAddress: { type: String },
-            firstName: { type: String },
-            lastName: { type: String },
-            phone: [PhoneSchema],
-            address: AddressSchema,
+        contactInformation: {
+         phoneNumber: [String],
         },
         billingAddress: {
             billingAddress: { type: String, },
