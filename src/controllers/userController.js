@@ -153,15 +153,6 @@ const checkOTP = async (req, res) => {
             return sendResponse(res, 400, 'Expired token.');
 
         }
-        // if (newPassword !== confirmPassword) {
-        //     return sendResponse(res, 400, 'New password and confirm password do not match.');
-        // }
-        // const hashedPassword = await hashPassword(newPassword);
-        // userData.password = hashedPassword;
-        // userData.otp = null;
-        // userData.resetPasswordExpire = null;
-
-        // await userData.save();
         return sendResponse(res, 200, 'OTP Is Correct successfully.');
     } catch (error) {
         console.error("Error while Checking OTP:", error.message);
