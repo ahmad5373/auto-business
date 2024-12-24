@@ -17,8 +17,8 @@ const sendResponse = (responseObj, statusCode, message, errors = [], data = []) 
     response.errors = errors.length == 0 ? {} : errors;
     response.data = data.length == 0 ? {} : data;
 
-    responseObj.status(statusCode).json(response);
-    // responseObj.status(200).json(response);
+    // responseObj.status(statusCode).json(response);
+    responseObj.status(200).json(response);
 }
 
 module.exports = {
