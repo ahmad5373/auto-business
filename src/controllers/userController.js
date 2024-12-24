@@ -135,11 +135,14 @@ const forgotPassword = async (req, res) => {
     }
 }
 
-const resetPassword = async (req, res) => {
+const checkOTP = async (req, res) => {
     try {
-        const { token, newPassword, confirmPassword } = req.body;
+        const { token} = req.body;
 
         const userData = await User.findOne({ otp: token, });
+        if (!token) {
+            return sendResponse(res, 400, 'Invalid token.');
+        }
         if (!userData) {
             return sendResponse(res, 400, 'Invalid token.');
         }
@@ -150,6 +153,38 @@ const resetPassword = async (req, res) => {
             return sendResponse(res, 400, 'Expired token.');
 
         }
+        // if (newPassword !== confirmPassword) {
+        //     return sendResponse(res, 400, 'New password and confirm password do not match.');
+        // }
+        // const hashedPassword = await hashPassword(newPassword);
+        // userData.password = hashedPassword;
+        // userData.otp = null;
+        // userData.resetPasswordExpire = null;
+
+        // await userData.save();
+        return sendResponse(res, 200, 'OTP Is Correct successfully.');
+    } catch (error) {
+        console.error("Error while Checking OTP:", error.message);
+        return sendResponse(res, 500, error.message);
+
+    }
+};
+
+const resetPassword = async (req, res) => {
+    try {
+        const { token, newPassword, confirmPassword } = req.body;
+
+        const userData = await User.findOne({ otp: token, });
+        if (!userData) {
+            return sendResponse(res, 400, 'Invalid User.');
+        }
+        // const resetPasswordExpire = userData.resetPasswordExpire;
+        // const currentTime = new Date();
+        // const expireTime = new Date(parseInt(resetPasswordExpire));
+        // if (expireTime < currentTime) {
+        //     return sendResponse(res, 400, 'Expired token.');
+
+        // }
         if (newPassword !== confirmPassword) {
             return sendResponse(res, 400, 'New password and confirm password do not match.');
         }
@@ -284,6 +319,7 @@ module.exports = {
     editUser,
     deleteUser,
     forgotPassword,
+    checkOTP,
     resetPassword,
     updatePassword,
     sendContactForm
