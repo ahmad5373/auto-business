@@ -1,24 +1,41 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-const User = require('../models/User');
 const { sendResponse } = require('../utility/api');
+const { getUserById } = require('../models/helpers');
 
 dotenv.config();
 
-const protected = async (req, res, next) => {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
 
-    if (!token) {
-        return res.status(401).json({ error: "Unauthorized Please Login" });
-    }
+const protected = async (req, res, next) => {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded?.user;
+        const bearerToken = req.headers?.authorization;
+        if (!bearerToken) {
+            return sendResponse(res, 401, 'Missing Authorization Details');
+        }
+
+        const token = bearerToken?.split(' ')[1];
+
+        try {
+            var decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`);
+            console.log(decodedToken.user_id)
+        } catch (error) {
+            console.log('Ye ha error ' + error)
+            return sendResponse(res, 401, 'Invalid Token');
+        }
+
+        const user = await getUserById(decodedToken?.user?._id);
+        console.log('auth user ' + user);
+        if (!user || user === null) {
+            return sendResponse(res, 403, 'Invalid User');
+        }
+        req.user = user;
         next();
     } catch (error) {
-        return sendResponse(res, 401, 'Unauthorized user');
+        console.error('Authentication error ' + error);
+        return sendResponse(res, 500, 'Somthing went wrong');
     }
-};
+
+}
 
 const authorizeRoles = (...roles) => {
     return (req, res, next) => {
