@@ -23,7 +23,7 @@ const protected = async (req, res, next) => {
             return sendResponse(res, 401, 'Invalid Token');
         }
 
-        const user = await getUserById(decodedToken?.user);
+        const user = await getUserById(decodedToken?.user?._id);
         console.log('auth user ' + user);
         if (!user || user === null) {
             return sendResponse(res, 403, 'Invalid User');

@@ -3,8 +3,9 @@ const { sendResponse } = require('../utility/api');
 
 
 const createCar = async (req, res) => {
+    console.log("req =>", req.user);
     try {
-        if (req.user._id !== req.body.user_id) {
+        if (req.user._id.toString() !== req.body.user_id) {
             return sendResponse(res, 403, "Please login your account you can't create another user car listing");
         }
         const car = new Car(req.body);
@@ -17,6 +18,8 @@ const createCar = async (req, res) => {
 
 
 const getAllCars = async (req, res) => {
+    console.log("req =>", req);
+
     try {
         const cars = await Car.find()
         return sendResponse(res, 200, "Cars fetched successfully", [], cars);
@@ -129,7 +132,7 @@ const getSearchedCars = async (req, res) => {
         cruiseControl,
         page = 1,
         limit = 10,
-    } = req.query; 
+    } = req.query;
 
     try {
         const query = {};
@@ -172,7 +175,7 @@ const getSearchedCars = async (req, res) => {
             limit: +limit,
         };
 
-        const searchResults = await Car.find(query,null, options);
+        const searchResults = await Car.find(query, null, options);
 
         if (!searchResults.length) {
             return sendResponse(res, 404, "No cars found for this query");
