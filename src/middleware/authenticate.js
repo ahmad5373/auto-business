@@ -10,30 +10,29 @@ const protected = async (req, res, next) => {
     try {
         const bearerToken = req.headers?.authorization;
         if (!bearerToken) {
-            return sendResponse(res, 401, 'Missing Authorization Details');
+           return sendResponse(res, 401, 'Missing Authorization Details');
         }
-
+    
         const token = bearerToken?.split(' ')[1];
-
+        
         try {
             var decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`);
-            console.log(decodedToken.user.role)
+            console.log(decodedToken.user_id) 
         } catch (error) {
-            console.log('Ye ha error ' + error)
+            console.log('Ye ha error '+error)
             return sendResponse(res, 401, 'Invalid Token');
         }
-
         
-        const user = await decodedToken?.user.role === 'user' ? getUserById(decodedToken?.user?._id): getDealerShipUserById(decodedToken?.user._id);
-        console.log('auth user ' + user);
-        if (!user || user === null) {
-            return sendResponse(res, 403, 'Invalid User');
+        const user =  decodedToken?.role === 'user' ? await  getUserById(decodedToken.user_id): await getDealerShipUserById(decodedToken?.user_id);
+        console.log('auth user '+user);
+        if (!user) {
+          return  sendResponse(res, 403, 'Please Login First');
         }
-        req.user = user;
-        next();
+        res.user = user;
+        next();        
     } catch (error) {
-        console.error('Authentication error ' + error);
-        return sendResponse(res, 500, 'Somthing went wrong');
+      console.error('Authentication error '+error);
+      return sendResponse(res, 500, 'Somthing went wrong');
     }
 
 }

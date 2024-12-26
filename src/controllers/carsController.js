@@ -3,9 +3,9 @@ const { sendResponse } = require('../utility/api');
 
 
 const createCar = async (req, res) => {
-    console.log("req =>", req.user);
     try {
-        if (req.user._id.toString() !== req.body.user_id) {
+        const loggedUser = res.user;
+        if (loggedUser?._id.toString() !== req.body.user_id) {
             return sendResponse(res, 403, "Please login your account you can't create another user car listing");
         }
         const car = new Car(req.body);
@@ -18,8 +18,6 @@ const createCar = async (req, res) => {
 
 
 const getAllCars = async (req, res) => {
-    console.log("req =>", req);
-
     try {
         const cars = await Car.find()
         return sendResponse(res, 200, "Cars fetched successfully", [], cars);
@@ -41,16 +39,43 @@ const getCarWithId = async (req, res) => {
     }
 };
 
-const getCarListingWithUserId = async (req, res) => {
-    const { userId } = req.params;
+const getMyListing = async (req, res) => {
     try {
-        const userCars = await Car.find({ user_id: userId })
-        if (!userCars) {
-            return sendResponse(res, 404, "Car not found");
-        }
+        const loggedUser = res.user;
+        const userCars = await Car.find({ user_id: loggedUser?._id })
         return sendResponse(res, 200, "Car details fetched successfully", [], userCars);
     } catch (error) {
-        return sendResponse(res, 500, `Error fetching Car: ${error.message}`);
+        return sendResponse(res, 500, `Error fetching Car Listings: ${error.message}`);
+    }
+};
+
+const getMySoldCars = async (req, res) => {
+    try {
+        const loggedUser = res.user;
+        const SoldCars = await Car.countDocuments({ 'user_id': loggedUser?._id, 'sold': true })
+        return sendResponse(res, 200, "User total sold cars", [], {SoldCars});
+    } catch (error) {
+        return sendResponse(res, 500, `Error fetching Sold Cars: ${error.message}`);
+    }
+};
+
+const getMyActiveListing = async (req, res) => {
+    try {
+        const loggedUser = res.user;
+        const ActiveListing = await Car.countDocuments({ 'user_id': loggedUser?._id, 'sold': false })
+        return sendResponse(res, 200, "User active listing", [], {ActiveListing});
+    } catch (error) {
+        return sendResponse(res, 500, `Error fetching active listing: ${error.message}`);
+    }
+};
+
+const getUserTotalListing = async (req, res) => {
+    const { userId } = req.params
+    try {
+        const totalListing = await Car.countDocuments({ user_id: userId })
+        return sendResponse(res, 200, "Car details fetched successfully", [], { totalListing });
+    } catch (error) {
+        return sendResponse(res, 500, `Error fetching Car Listings: ${error.message}`);
     }
 };
 
@@ -202,12 +227,76 @@ const deleteCar = async (req, res) => {
 };
 
 
+// const orderGraph = async (req, res) => {
+//     try {
+//         const currentDate = new Date();
+//         const lastWeekDate = new Date(currentDate);
+//         lastWeekDate.setDate(currentDate.getDate() - 6);
+
+//         const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+//         const formattedLastWeekDate = lastWeekDate.toISOString().split('T')[0];
+
+//         const orderResults = await Car.aggregate([
+//             {
+//                 $match: {
+//                     createdAt: {
+//                         $gte: new Date(`${formattedLastWeekDate}T00:00:00Z`),
+//                         $lte: new Date(`${formattedCurrentDate}T23:59:59Z`),
+//                     },
+//                     sold: false, // Filter out sold cars
+//                 },
+//             },
+//             {
+//                 $group: {
+//                     _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+//                     totalOrder: { $count: {} },
+//                 },
+//             },
+//             { $sort: { _id: -1 } },
+//         ]);
+
+//         const formattedOrderResults = orderResults.map((result) => ({
+//             ...result,
+//             date: result._id,
+//             totalOrder: result.totalOrder,
+//         }));
+
+//         const result = [];
+//         for (let i = 0; i < 7; i++) {
+//             const date = new Date(currentDate);
+//             date.setDate(currentDate.getDate() - i);
+//             const formattedDay = date.toISOString().split('T')[0];
+
+//             const dayResult = formattedOrderResults.find((result) => result.date === formattedDay);
+//             result.push({
+//                 date: formattedDay,
+//                 totalOrder: dayResult ? dayResult.totalOrder : 0,
+//             });
+//         }
+
+//         return res.status(200).send({
+//             status: true,
+//             data: result,
+//             message: 'The order data has been fetched successfully',
+//         });
+//     } catch (error) {
+//         console.error('Error fetching data:', error);
+//         return res.status(500).send({
+//             status: false,
+//             message: 'Error fetching data',
+//             error: error.message,
+//         });
+//     }
+// };
 
 module.exports = {
     createCar,
     getAllCars,
     getCarWithId,
-    getCarListingWithUserId,
+    getMyListing,
+    getMySoldCars,
+    getMyActiveListing,
+    getUserTotalListing,
     getSavedAdsWithUserId,
     getUserSoldCars,
     updateCarStatus,

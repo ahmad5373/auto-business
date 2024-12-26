@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const { sendResponse } = require('../utility/api');
 const sendMail = require('../middleware/SendMail');
 const DealershipUser = require('../models/DealershipUser');
+const { createJwtToken } = require('./userController');
 dotenv.config();
 
 const hashPassword = async (password) => bcrypt.hash(password, 10);
@@ -53,7 +54,7 @@ const loginUser = async (req, res) => {
         const token = jwt.sign({ user: user }, process.env.JWT_SECRET);
         const response = {
             user: user,
-            access_token: token
+            access_token: createJwtToken(user?._id, user?.role)
         }
         return sendResponse(res, 200, "Login Successful", [], response);
     } catch (error) {
@@ -63,7 +64,7 @@ const loginUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     try {
-        const users = await DealershipUser.find({ email: { $ne: req.user.email } })
+        const users = await DealershipUser.find()
         return sendResponse(res, 200, "Users fetched successfully", [], users);
     } catch (error) {
         return sendResponse(res, 500, `Error fetching users: ${error.message}`);

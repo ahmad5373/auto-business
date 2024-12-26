@@ -4,13 +4,20 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const { sendResponse } = require('../utility/api');
 const sendMail = require('../middleware/SendMail');
+const { getUserById } = require('../models/helpers');
 dotenv.config();
 
 const hashPassword = async (password) => await bcrypt.hash(password, 10);
 const findUserByEmail = async (email) => await User.findOne({ email });
 
+const createJwtToken = (user_id, role) => {
+    console.log('im createJwtToken ' + user_id)
+    const token = jwt.sign({ user_id: user_id, role: role }, `${process.env.JWT_SECRET}`);
+    return token;
+}
+
 const registerUser = async (req, res) => {
-    const { email, password, repeatedPassword, name, phoneNo, address,  city,   } = req.body;
+    const { email, password, repeatedPassword, name, phoneNo, address, city, } = req.body;
     try {
         const existingUser = await findUserByEmail(email);
         if (existingUser) {
@@ -34,20 +41,20 @@ const loginUser = async (req, res) => {
         if (!userData || !await bcrypt.compare(password, userData.password)) {
             return sendResponse(res, 401, "Invalid credentials");
         }
-        const token = jwt.sign({ user: userData }, process.env.JWT_SECRET);
+        // const token = jwt.sign({ user: userData }, process.env.JWT_SECRET);
         const userObj = {
             _id: userData?._id,
-            name:userData?.name ,
-            email:userData?.email ,
-            role:userData?.role,
-            phone: userData?.phone ,
-            gender:userData?.gender ,
-            address: userData?.address ,
+            name: userData?.name,
+            email: userData?.email,
+            role: userData?.role,
+            phone: userData?.phone,
+            gender: userData?.gender,
+            address: userData?.address,
             city: userData?.city,
-            access_token: token
+            access_token: createJwtToken(userData?._id, userData?.role)
         }
 
-        return sendResponse(res, 200, "Login Successful", [], {user:userObj});
+        return sendResponse(res, 200, "Login Successful", [], { user: userObj });
     } catch (error) {
         return sendResponse(res, 500, `Error during login: ${error?.message}`);
     }
@@ -55,7 +62,7 @@ const loginUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find({ email: { $ne: req.user.email } })
+        const users = await User.find()
         return sendResponse(res, 200, "Users fetched successfully", [], users);
     } catch (error) {
         return sendResponse(res, 500, `Error fetching users: ${error.message}`);
@@ -138,7 +145,7 @@ const forgotPassword = async (req, res) => {
 
 const checkOTP = async (req, res) => {
     try {
-        const { token} = req.body;
+        const { token } = req.body;
 
         const userData = await User.findOne({ otp: token, });
         if (!token) {
@@ -303,6 +310,7 @@ const sendContactForm = async (req, res) => {
 
 
 module.exports = {
+    createJwtToken,
     registerUser,
     loginUser,
     getAllUsers,
