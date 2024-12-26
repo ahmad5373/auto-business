@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const { sendResponse } = require('../utility/api');
-const { getUserById } = require('../models/helpers');
+const { getUserById, getDealerShipUserById } = require('../models/helpers');
 
 dotenv.config();
 
@@ -17,13 +17,14 @@ const protected = async (req, res, next) => {
 
         try {
             var decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`);
-            console.log(decodedToken.user_id)
+            console.log(decodedToken.user.role)
         } catch (error) {
             console.log('Ye ha error ' + error)
             return sendResponse(res, 401, 'Invalid Token');
         }
 
-        const user = await getUserById(decodedToken?.user?._id);
+        
+        const user = await decodedToken?.user.role === 'user' ? getUserById(decodedToken?.user?._id): getDealerShipUserById(decodedToken?.user._id);
         console.log('auth user ' + user);
         if (!user || user === null) {
             return sendResponse(res, 403, 'Invalid User');

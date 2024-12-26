@@ -7,7 +7,7 @@ const DealershipUser = require('../models/DealershipUser');
 dotenv.config();
 
 const hashPassword = async (password) => bcrypt.hash(password, 10);
-const findUserByEmail = async (email) =>  {return await DealershipUser.findOne({ 'dealershipInformation.email': email });};
+const findUserByEmail = async (email) => { return await DealershipUser.findOne({ 'dealershipInformation.email': email }); };
 
 const createDealershipUser = async (req, res) => {
     const { password } = req.body.dealershipInformation;
@@ -21,14 +21,14 @@ const createDealershipUser = async (req, res) => {
             }
         });
         await dealershipUser.save();
-        return sendResponse(res, 201, "Dealership Registered Successfully",[] ,dealershipUser);
+        return sendResponse(res, 201, "Dealership Registered Successfully", [], dealershipUser);
     } catch (error) {
         return sendResponse(res, 500, `Error creating Dealership: ${error.message}`);
     }
 };
 
-const registerUser = async(req, res)=>{
-    const { email, password,repeatedPassword } = req.body;
+const registerUser = async (req, res) => {
+    const { email, password, repeatedPassword } = req.body;
     try {
         const existingUser = await findUserByEmail(email);
         if (existingUser) {
@@ -50,7 +50,7 @@ const loginUser = async (req, res) => {
         if (!user || !await bcrypt.compare(password, user?.dealershipInformation.password)) {
             return sendResponse(res, 401, "Invalid credentials");
         }
-        const token = jwt.sign({ user: user }, process.env.JWT_SECRET, { expiresIn: '30d' });
+        const token = jwt.sign({ user: user }, process.env.JWT_SECRET);
         const response = {
             user: user,
             access_token: token

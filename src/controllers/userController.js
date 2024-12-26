@@ -186,7 +186,7 @@ const resetPassword = async (req, res) => {
         userData.resetPasswordExpire = null;
 
         await userData.save();
-        return sendResponse(res, 400, 'Password reset successfully.');
+        return sendResponse(res, 200, 'Password reset successfully.');
     } catch (error) {
         console.error("Error while resetting password:", error.message);
         return sendResponse(res, 500, error.message);
@@ -209,7 +209,7 @@ const updatePassword = async (req, res) => {
         const hashedPassword = await hashPassword(newPassword);
         user.password = hashedPassword;
         await user.save();
-        return sendResponse(res, 400, 'Password Change successfully.');
+        return sendResponse(res, 200, 'Password Change successfully.');
     } catch (error) {
         console.error("Error while Changing password:", error.message);
         return sendResponse(res, 500, error.message);
@@ -292,13 +292,12 @@ const sendContactForm = async (req, res) => {
         </body>
         </html>
             `;
-
     try {
         await sendMail(contactEmail, subject, html, userEmail);
-        res.status(200).json({ message: "Contact form submitted successfully" });
+        return sendResponse(res, 200, 'Contact form submitted successfully');
     } catch (error) {
-        console.error("Error while sending contact form email:", error.message);
-        res.status(500).json({ error: "Failed to send contact form" });
+        console.error("Error while Changing password:", error.message);
+        return sendResponse(res, 500, error.message);
     }
 };
 
