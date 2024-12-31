@@ -9,11 +9,11 @@ const carSchema = new mongoose.Schema({
   sold: { type: Boolean, default: false },
   saveAds: {
     save: { type: Boolean, default: false },
-    user_id: {
+    user_ids: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       index: true
-    }
+    }]
   },
   basicData: {
     make: { type: String, required: true },
