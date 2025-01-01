@@ -53,7 +53,7 @@ const getMySoldCars = async (req, res) => {
     try {
         const loggedUser = res.user;
         const SoldCars = await Car.countDocuments({ 'user_id': loggedUser?._id, 'sold': true })
-        return sendResponse(res, 200, "User total sold cars", [], {SoldCars});
+        return sendResponse(res, 200, "User total sold cars", [], { SoldCars });
     } catch (error) {
         return sendResponse(res, 500, `Error fetching Sold Cars: ${error.message}`);
     }
@@ -63,7 +63,7 @@ const getMyActiveListing = async (req, res) => {
     try {
         const loggedUser = res.user;
         const ActiveListing = await Car.countDocuments({ 'user_id': loggedUser?._id, 'sold': false })
-        return sendResponse(res, 200, "User active listing", [], {ActiveListing});
+        return sendResponse(res, 200, "User active listing", [], { ActiveListing });
     } catch (error) {
         return sendResponse(res, 500, `Error fetching active listing: ${error.message}`);
     }
@@ -80,9 +80,9 @@ const getUserTotalListing = async (req, res) => {
 };
 
 const getUserMoreListing = async (req, res) => {
-    const { userId ,listingId } = req.query;
+    const { userId, listingId } = req.query;
     try {
-        const moreListing = await Car.find({ user_id: userId, 'sold': false,  _id: {$ne :  listingId} })
+        const moreListing = await Car.find({ user_id: userId, 'sold': false, _id: { $ne: listingId } })
         return sendResponse(res, 200, "Car details fetched successfully", [], { totalListing: moreListing });
     } catch (error) {
         return sendResponse(res, 500, `Error fetching Car Listings: ${error.message}`);
@@ -93,7 +93,8 @@ const getUserMoreListing = async (req, res) => {
 const getSavedAdsWithUserId = async (req, res) => {
     const { userId } = req.params;
     try {
-        const savedCarAds = await Car.find({ 'saveAds.user_id': userId, 'saveAds.save': true })
+        const savedCarAds = await Car.find({  'saveAds.user_ids': userId, 'saveAds.save': true})
+        console.log("savedCarAds =>", savedCarAds);
         if (!savedCarAds) {
             return sendResponse(res, 404, "Car Ads not found for this user");
         }
