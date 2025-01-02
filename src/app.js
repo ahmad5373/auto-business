@@ -19,21 +19,24 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(errorHandler);
 
-app.use(async (req, res, next) => {
-    if (mongoose.connection.readyState !== 1) {
-        try {
-            console.log('checking state..');
-            console.log("Reconnecting to MongoDB...");
-            await connectionDB();
-            console.log("Reconnected to MongoDB.");
-        } catch (error) {
-            console.error("Database connection error:", error.message);
-            return res.status(500).send("Database connection error");
-        }
+const initializeApp = async () => {
+    try {
+      console.log("Connecting to MongoDB...");
+      await connectionDB();
+      console.log("MongoDB connected successfully!");
+  
+    //   const PORT = process.env.PORT || 3000;
+    //   app.listen(PORT, () => {
+    //     console.log(`Server is running on port ${PORT}`);
+    //   });
+    } catch (error) {
+      console.error("Failed to initialize the application:", error.message);
+      process.exit(1); // Exit the application if the connection fails
     }
-    next();
-});
-
+  };
+  
+  initializeApp();
+  
 app.get("/", (req, res) => {
     res.send("Application is currently working!");
 });
