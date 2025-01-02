@@ -82,7 +82,7 @@ const getUserTotalListing = async (req, res) => {
 const getUserMoreListing = async (req, res) => {
     const { userId, listingId } = req.query;
     try {
-        const moreListing = await Car.find({ user_id: userId, 'sold': false, _id: { $ne: listingId } })
+        const moreListing = await Car.find({ user_id: userId,  _id: { $ne: listingId } })
         return sendResponse(res, 200, "Car details fetched successfully", [], { totalListing: moreListing });
     } catch (error) {
         return sendResponse(res, 500, `Error fetching Car Listings: ${error.message}`);
