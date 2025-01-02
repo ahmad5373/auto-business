@@ -29,7 +29,7 @@ app.use(errorHandler);
 connectionDB();
 // createAdmin(); 
 
-//Default route
+//Default routes
 app.get('/' , (req,res)=>{
     res.send("Application is currently working !")
 });
