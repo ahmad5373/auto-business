@@ -20,9 +20,9 @@ app.use(bodyParser.json());
 app.use(errorHandler);
 
 app.use(async (req, res, next) => {
-    console.log("mongoose.connection.readyState =>", mongoose.connection.readyState);
     if (mongoose.connection.readyState !== 1) {
         try {
+            console.log('checking state..');
             console.log("Reconnecting to MongoDB...");
             await connectionDB();
             console.log("Reconnected to MongoDB.");
