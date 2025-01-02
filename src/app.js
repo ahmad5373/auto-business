@@ -1,7 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const express = require("express");
-const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -25,13 +24,9 @@ const initializeApp = async () => {
       await connectionDB();
       console.log("MongoDB connected successfully!");
   
-    //   const PORT = process.env.PORT || 3000;
-    //   app.listen(PORT, () => {
-    //     console.log(`Server is running on port ${PORT}`);
-    //   });
     } catch (error) {
       console.error("Failed to initialize the application:", error.message);
-      process.exit(1); // Exit the application if the connection fails
+      process.exit(1);
     }
   };
   
