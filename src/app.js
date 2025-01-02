@@ -20,21 +20,22 @@ app.use(bodyParser.json());
 app.use(errorHandler);
 
 app.use(async (req, res, next) => {
-  if (mongoose.connection.readyState !== 1) {
-    try {
-      console.log("Reconnecting to MongoDB...");
-      await connectionDB();
-      console.log("Reconnected to MongoDB.");
-    } catch (error) {
-      console.error("Database connection error:", error.message);
-      return res.status(500).send("Database connection error");
+    console.log("mongoose.connection.readyState =>", mongoose.connection.readyState);
+    if (mongoose.connection.readyState !== 1) {
+        try {
+            console.log("Reconnecting to MongoDB...");
+            await connectionDB();
+            console.log("Reconnected to MongoDB.");
+        } catch (error) {
+            console.error("Database connection error:", error.message);
+            return res.status(500).send("Database connection error");
+        }
     }
-  }
-  next();
+    next();
 });
 
 app.get("/", (req, res) => {
-  res.send("Application is currently working!");
+    res.send("Application is currently working!");
 });
 
 app.use("/users", User);
