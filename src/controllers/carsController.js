@@ -94,7 +94,6 @@ const getSavedAdsWithUserId = async (req, res) => {
     const { userId } = req.params;
     try {
         const savedCarAds = await Car.find({  'saveAds.user_ids': userId, 'saveAds.save': true})
-        console.log("savedCarAds =>", savedCarAds);
         if (!savedCarAds) {
             return sendResponse(res, 404, "Car Ads not found for this user");
         }
