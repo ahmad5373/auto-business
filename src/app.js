@@ -19,7 +19,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(errorHandler);
 
-// Ensure database connection for every request
 app.use(async (req, res, next) => {
   if (mongoose.connection.readyState !== 1) {
     try {
@@ -34,12 +33,10 @@ app.use(async (req, res, next) => {
   next();
 });
 
-// Default route
 app.get("/", (req, res) => {
   res.send("Application is currently working!");
 });
 
-// API routes
 app.use("/users", User);
 app.use("/dealership", Dealership);
 app.use("/cars", Car);
