@@ -14,7 +14,6 @@ const terms = require("../src/routes/terms&conditionRoutes");
 const faqs = require("../src/routes/faqsRoutes");
 
 app.use(cors());
-app.options("*", cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(errorHandler);

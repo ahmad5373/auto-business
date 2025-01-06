@@ -17,7 +17,7 @@ const createJwtToken = (user_id, role) => {
 }
 
 const registerUser = async (req, res) => {
-    const { email, password, repeatedPassword, name, phoneNo, address, city, } = req.body;
+    const { email, password, repeatedPassword, fullName, phoneNo, address, city, profileImage} = req.body;
     try {
         const existingUser = await findUserByEmail(email);
         if (existingUser) {
@@ -27,8 +27,20 @@ const registerUser = async (req, res) => {
             return sendResponse(res, 400, 'Password and repeated password do not match.');
         }
         const hashedPassword = await hashPassword(password);
-        await User.create({ email, password: hashedPassword, name, phoneNo, address, city });
-        return sendResponse(res, 201, "User Registered with Us Successfully",);
+        const createdUser = await User.create({ email, password: hashedPassword, name: fullName, phoneNo, address, city, profileImage });
+        const userObj = {
+            _id: createdUser?._id,
+            name: createdUser?.name,
+            email: createdUser?.email,
+            role: createdUser?.role,
+            phone: createdUser?.phone,
+            gender: createdUser?.gender,
+            address: createdUser?.address,
+            city: createdUser?.city,
+            profileImage: createdUser?.profileImage,
+            access_token: createJwtToken(createdUser?._id, createdUser?.role)
+        }
+        return sendResponse(res, 201, "User Registered with Us Successfully",[], { user: userObj });
     } catch (error) {
         return sendResponse(res, 500, `Error creating user: ${error.message}`);
     }
