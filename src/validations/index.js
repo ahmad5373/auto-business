@@ -2,15 +2,15 @@ const { body, validationResult } = require('express-validator');
 const { sendResponse } = require('../utility/api');
 
 const requestValidation = (req, res, next) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        return next();
-    }
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    return next();
+  }
 
-    const extractedResults = [];
-    errors.array().forEach(err => extractedResults.push({[err.path]: err.msg}));
+  const extractedResults = [];
+  errors.array().forEach(err => extractedResults.push({ [err.path]: err.msg }));
 
-    return sendResponse(res, 422, 'Invalid request data', extractedResults, []);
+  return sendResponse(res, 422, 'Invalid request data', extractedResults, []);
 }
 
 // SAMPLE_CODE
@@ -26,10 +26,15 @@ const requestValidation = (req, res, next) => {
 //     .isStrongPassword({ minLength: 6, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }).withMessage('Password must contain atleast one lowercase, uppercase, number and special characters'),
 
 const createUserValidation = [
-    body('email').not().isEmpty().isEmail().withMessage("Valid Email is required"),
-    body('password')
+  body('name').not().isEmpty().withMessage("name is required"),
+  body('email').not().isEmpty().isEmail().withMessage("Valid Email is required"),
+  body('password')
     .not().isEmpty().withMessage('Password is required').bail()
-    .isString().withMessage('Password must be of type String').bail()
+    .isString().withMessage('Password must be of type String').bail(),
+  body('gender').not().isEmpty().withMessage("gender is required"),
+  body('address').not().isEmpty().withMessage("address is required"),
+  body('phone').not().isEmpty().withMessage("phone Number is required"),
+  body('profileImage').not().isEmpty().withMessage("profileImage is required"),
 ]
 
 const loginValidation = [
@@ -70,6 +75,6 @@ module.exports = {
   loginValidation,
   createMessageValidation,
   subscribeNewsletterValidation,
- createBlogValidation,
- createCarValidation
+  createBlogValidation,
+  createCarValidation
 };

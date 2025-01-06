@@ -210,12 +210,28 @@ const getSearchedCars = async (req, res) => {
             limit: +limit,
         };
 
+        const totalResults = await Car.countDocuments(query);
         const searchResults = await Car.find(query, null, options);
-
+        
+        const pagination = {
+            currentPage: page,
+            totalPages: Math.ceil(totalResults / limit),
+            pageSize: limit,
+            totalResults,
+        };
+        
         if (!searchResults.length) {
-            return sendResponse(res, 404, "No cars found for this query");
+            return sendResponse(res, 404, "No cars found for this query", [], {
+                pagination,
+                results: []
+            });
         }
-        return sendResponse(res, 200, "Cars fetched successfully", [], searchResults);
+        
+        return sendResponse(res, 200, "Cars fetched successfully", [], {
+            pagination,
+            results: searchResults
+        });
+        
     } catch (error) {
         return sendResponse(res, 500, `Error fetching cars: ${error.message}`);
     }
