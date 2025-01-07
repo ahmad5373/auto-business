@@ -21,7 +21,8 @@ const FollowSeller = async (req, res) => {
 
 const UnfollowSeller = async (req, res) => {
     try {
-        const { user, dealership } = req.body;
+        const { user } = req.body;
+        const { dealership} = req.params;
         await Follow.findOneAndDelete({ user, dealership });
         return sendResponse(res, 200, "Unfollowed dealership successfully");
     } catch (error) {
