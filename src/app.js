@@ -12,6 +12,7 @@ const Dealership = require("../src/routes/dealershipUserRoutes");
 const Car = require("../src/routes/carRoutes");
 const terms = require("../src/routes/terms&conditionRoutes");
 const faqs = require("../src/routes/faqsRoutes");
+const Follow = require("../src/routes/followRoutes");
 
 app.use(cors());
 app.use(cookieParser());
@@ -41,5 +42,6 @@ app.use("/dealership", Dealership);
 app.use("/cars", Car);
 app.use("/terms", terms);
 app.use("/faqs", faqs);
+app.use("/follow", Follow);
 
 module.exports = app;
