@@ -21,12 +21,20 @@ const FollowSeller = async (req, res) => {
 
 const UnfollowSeller = async (req, res) => {
     try {
-        const { user } = req.body;
-        const { dealership} = req.params;
+        const user = res.user?._id;
+        const { dealership } = req.params;
+        if (!user || !dealership) {
+            return sendResponse(res, 400, "User ID and dealership ID are required");
+        }
+        const followRecord = await Follow.findOne({ user, dealership });
+        if (!followRecord) {
+            return sendResponse(res, 404, "Follow relationship not found");
+        }
         await Follow.findOneAndDelete({ user, dealership });
         return sendResponse(res, 200, "Unfollowed dealership successfully");
     } catch (error) {
-        return sendResponse(res, 500, `Error fetching followed: ${error.message}`);
+        console.error("Error in UnfollowSeller:", error);
+        return sendResponse(res, 500, `Internal server error: ${error.message}`);
     }
 };
 
