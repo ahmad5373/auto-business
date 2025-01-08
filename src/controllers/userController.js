@@ -216,9 +216,10 @@ const resetPassword = async (req, res) => {
 
 const updatePassword = async (req, res) => {
     try {
-        const { id, currentPassword, newPassword, confirmPassword } = req.body;
+        const userId = res.user?._id
+        const { currentPassword, newPassword, confirmPassword } = req.body;
 
-        const user = await User.findById(id);
+        const user = await User.findById(userId);
         if (!user || !await bcrypt.compare(currentPassword, user.password)) {
             return sendResponse(res, 401, "Current password is not correct");
         }

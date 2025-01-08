@@ -141,13 +141,36 @@ const forgotPassword = async (req, res) => {
         //Compose email 
         const subject = "Password Reset Request otp";
 
-        await sendMail(userData.email, subject, html);
+        await sendMail(userData?.dealershipInformation?.email, subject, html);
         return sendResponse(res, 200, "Password Reset Request sent successfully");
     } catch (error) {
         console.error("Error while processing forgot password request:", error.message);
         return sendResponse(res, 500, `${error.message}`);
     }
 }
+
+const verifyOTP = async (req, res) => {
+    try {
+        const { token } = req.body;
+        const userData = await DealershipUser.findOne({ otp: token, });
+        console.log("userData =>", userData);
+        if (!userData) {
+            return sendResponse(res, 400, 'Invalid token.');
+        }
+        const resetPasswordExpire = userData.resetPasswordExpire;
+        const currentTime = new Date();
+        const expireTime = new Date(parseInt(resetPasswordExpire));
+        if (expireTime < currentTime) {
+            return sendResponse(res, 400, 'Expired token.');
+
+        }
+        return sendResponse(res, 200, 'OTP Is Correct.');
+    } catch (error) {
+        console.error("Error while Checking OTP:", error.message);
+        return sendResponse(res, 500, error.message);
+
+    }
+};
 
 const resetPassword = async (req, res) => {
     try {
@@ -168,7 +191,7 @@ const resetPassword = async (req, res) => {
             return sendResponse(res, 400, 'New password and confirm password do not match.');
         }
         const hashedPassword = await hashPassword(newPassword);
-        userData.password = hashedPassword;
+        userData.dealershipInformation.password = hashedPassword;
         userData.otp = null;
         userData.resetPasswordExpire = null;
 
@@ -183,10 +206,11 @@ const resetPassword = async (req, res) => {
 
 const updatePassword = async (req, res) => {
     try {
-        const { id, currentPassword, newPassword, confirmPassword } = req.body;
+        const userId = res.user?._id
+        const { currentPassword, newPassword, confirmPassword } = req.body;
 
-        const user = await DealershipUser.findById(id);
-        if (!user || !await bcrypt.compare(currentPassword, user.password)) {
+        const user = await DealershipUser.findById(userId);
+        if (!user || !await bcrypt.compare(currentPassword, user.dealershipInformation.password)) {
             return sendResponse(res, 401, "Current password is not correct");
         }
 
@@ -214,6 +238,7 @@ module.exports = {
     editUser,
     deleteUser,
     forgotPassword,
+    verifyOTP,
     resetPassword,
     updatePassword
 };

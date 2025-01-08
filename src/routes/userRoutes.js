@@ -1,7 +1,7 @@
 const express = require('express');
 const { registerUser, loginUser, getAllUsers, deleteUser, editUser, getUserWithId, forgotPassword, resetPassword, updatePassword, sendContactForm, checkOTP } = require('../controllers/userController');
 const { protected } = require('../middleware/authenticate');
-const { createUserValidation, requestValidation, loginValidation } = require('../validations');
+const { createUserValidation, requestValidation, loginValidation, forgetPasswordValidation, verifyOTPValidation, resetPasswordValidation, changePasswordValidation, ContactEmailValidation } = require('../validations');
 
 const router = express.Router();
 
@@ -11,11 +11,11 @@ router.get('/get-users', protected,  getAllUsers);
 router.get('/:id', protected,  getUserWithId);
 router.put('/:id', protected,  editUser);
 router.delete('/:id', protected,  deleteUser);
-router.post("/forgot-password" ,  forgotPassword);
-router.post("/verify-otp" , checkOTP);
-router.post("/reset-password" , resetPassword);
-router.post("/change-password" , updatePassword);
-router.post("/contact-email" , sendContactForm);
+router.post("/forgot-password", forgetPasswordValidation, requestValidation,  forgotPassword);
+router.post("/verify-otp", verifyOTPValidation, requestValidation, checkOTP);
+router.post("/reset-password", resetPasswordValidation, requestValidation,  resetPassword);
+router.post("/change-password",  protected,  changePasswordValidation, requestValidation, updatePassword);
+router.post("/contact-email", ContactEmailValidation, requestValidation,  sendContactForm);
 
 
 module.exports = router;

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const carSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'DealershipUser',
     index: true
   },
   sold: { type: Boolean, default: false },
@@ -13,10 +13,11 @@ const carSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       index: true
+      
     }]
   },
   basicData: {
-    make: { type: String, required: true },
+    make: { type: String, required: true, },
     model: { type: String, required: true },
     variant: { type: String },
     firstRegistration: { type: Date },
