@@ -86,6 +86,16 @@ const getFollowerCount = async (req, res) => {
     }
 };
 
+const checkFollowStatus = async (req, res) => {
+    try {
+        const { userId, dealershipId } = req.query;
+        const isFollowing = await Follow.findOne({ user: userId, dealership: dealershipId })
+        return sendResponse(res, 200, "Follow Status", [], {isFollowing: isFollowing ? true : false});
+    } catch (error) {
+        console.log("error =>", error);
+        return sendResponse(res, 500, `Error Checking follow: ${error.message}`)
+    }
+}
 
 module.exports = {
     FollowSeller,
@@ -93,4 +103,5 @@ module.exports = {
     getFollowingList,
     SellerDetails,
     getFollowerCount,
+    checkFollowStatus,
 };
