@@ -11,8 +11,12 @@ const hashPassword = async (password) => bcrypt.hash(password, 10);
 const findUserByEmail = async (email) => { return await DealershipUser.findOne({ 'dealershipInformation.email': email }); };
 
 const createDealershipUser = async (req, res) => {
-    const { password } = req.body.dealershipInformation;
+    const { password, email } = req.body.dealershipInformation;
     try {
+        const existingUser = await findUserByEmail(email);
+        if (existingUser) {
+            return sendResponse(res, 400, "Dealership already exists with this email try other");
+        }
         const hashedPassword = await hashPassword(password);
         const dealershipUser = new DealershipUser({
             ...req.body,
@@ -33,7 +37,7 @@ const registerUser = async (req, res) => {
     try {
         const existingUser = await findUserByEmail(email);
         if (existingUser) {
-            return sendResponse(res, 400, "Dealership already exists..");
+            return sendResponse(res, 400, "Dealership already exists with this email try other");
         }
         if (password !== repeatedPassword) {
             return sendResponse(res, 400, 'Password and repeated password do not match.');

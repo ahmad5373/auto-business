@@ -1,12 +1,12 @@
 const express = require('express');
 const { registerUser, loginUser, getAllUsers, deleteUser, editUser, getUserWithId, forgotPassword, resetPassword, updatePassword, createDealershipUser } = require('../controllers/dealershipUserController');
 const { protected } = require('../middleware/authenticate');
-const { createUserValidation, requestValidation, loginValidation } = require('../validations');
+const { createUserValidation, requestValidation, loginValidation, registerDealershipValidation, createDealerShipValidation } = require('../validations');
 
 const router = express.Router();
 
-router.post('/register', createUserValidation, requestValidation,  registerUser);
-router.post('/create-dealership', createDealershipUser);
+router.post('/register', registerDealershipValidation, requestValidation,  registerUser);
+router.post('/create-dealership', createDealerShipValidation, requestValidation, createDealershipUser);
 router.post('/login', loginValidation, requestValidation, loginUser);
 router.get('/get-dealership', protected,  getAllUsers);
 router.get('/:id', protected,  getUserWithId);

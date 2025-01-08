@@ -36,6 +36,27 @@ const createUserValidation = [
   body('phone').not().isEmpty().withMessage("phone Number is required"),
   body('profileImage').not().isEmpty().withMessage("profileImage is required"),
 ]
+const registerDealershipValidation = [
+  body('email').not().isEmpty().isEmail().withMessage("Valid Email is required"),
+  body('password')
+    .not().isEmpty().withMessage('Password is required').bail()
+    .isString().withMessage('Password must be of type String').bail(),
+]
+
+const createDealerShipValidation = [
+  body('dealershipInformation.dealerName').not().isEmpty().withMessage("name is required"),
+  body('dealershipInformation.email').not().isEmpty().isEmail().withMessage("Valid Email is required"),
+  body('dealershipInformation.password')
+    .not().isEmpty().withMessage('Password is required').bail()
+    .isString().withMessage('Password must be of type String').bail(),
+  body('dealershipInformation.profileImage').not().isEmpty().withMessage("profileImage is required"),
+  body('dealershipInformation.streetAddress').not().isEmpty().withMessage("address is required"),
+  body('dealershipInformation.country').not().isEmpty().withMessage("country is required"),
+  // body('phone').not().isEmpty().withMessage("phone Number is required"),
+  body('contactInformation.phoneNumber').not().isEmpty().withMessage("phoneNumber is required"),
+  body('description').not().isEmpty().withMessage("description is required"),
+]
+
 
 const loginValidation = [
   body('email').not().isEmpty().isEmail().withMessage("Valid Email is required"),
@@ -76,5 +97,7 @@ module.exports = {
   createMessageValidation,
   subscribeNewsletterValidation,
   createBlogValidation,
-  createCarValidation
+  createCarValidation,
+  registerDealershipValidation,
+  createDealerShipValidation
 };
