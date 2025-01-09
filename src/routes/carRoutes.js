@@ -15,7 +15,7 @@ router.get('/user/more-listing', protected, getUserMoreListing);
 router.get('/:id', protected,  getCarWithId);
 router.get('/saved-ads/:userId', protected,  getSavedAdsWithUserId);
 router.get('/sold-cars/:userId', protected,  getUserSoldCars);
-router.get('/', protected,  getSearchedCars);444
+router.get('/', protected,  getSearchedCars);
 router.put('/:id', protected, updateCarStatus);
 router.delete('/:id', protected,  deleteCar);
 

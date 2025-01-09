@@ -158,7 +158,8 @@ const getSearchedCars = async (req, res) => {
         emissionClass,
         exteriorColor,
         interiorColor,
-        features,
+        exteriorFeatures,
+        interiorFeatures,
         internalMaterial,
         airbags,
         airConditioning,
@@ -196,7 +197,8 @@ const getSearchedCars = async (req, res) => {
         if (emissionClass) query['technicalData.emissionClass'] = emissionClass;
         if (exteriorColor) query['exterior.exteriorColor'] = exteriorColor;
         if (interiorColor) query['interior.interiorColor'] = interiorColor;
-        if (features) query['interior.otherFeatures'] = features;
+        if (exteriorFeatures) query['exterior.otherFeatures'] = exteriorFeatures;
+        if (interiorFeatures) query['interior.otherFeatures'] = interiorFeatures;
         // if (features) query['exterior.otherFeatures'] = features;
         if (internalMaterial) query['interior.internalMaterial'] = internalMaterial;
         if (airbags) query['interior.airbags'] = { $in: airbags.split(',') };
