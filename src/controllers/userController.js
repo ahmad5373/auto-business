@@ -161,11 +161,8 @@ const checkOTP = async (req, res) => {
         const { token } = req.body;
 
         const userData = await User.findOne({ otp: token, });
-        if (!token) {
-            return sendResponse(res, 400, 'Invalid token.');
-        }
         if (!userData) {
-            return sendResponse(res, 400, 'Invalid token.');
+            return sendResponse(res, 400, 'Incorrect OTP.');
         }
         const resetPasswordExpire = userData.resetPasswordExpire;
         const currentTime = new Date();
@@ -174,7 +171,7 @@ const checkOTP = async (req, res) => {
             return sendResponse(res, 400, 'Expired token.');
 
         }
-        return sendResponse(res, 200, 'OTP Is Correct successfully.');
+        return sendResponse(res, 200, 'OTP Is Correct.');
     } catch (error) {
         console.error("Error while Checking OTP:", error.message);
         return sendResponse(res, 500, error.message);

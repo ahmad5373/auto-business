@@ -153,9 +153,8 @@ const verifyOTP = async (req, res) => {
     try {
         const { token } = req.body;
         const userData = await DealershipUser.findOne({ otp: token, });
-        console.log("userData =>", userData);
         if (!userData) {
-            return sendResponse(res, 400, 'Invalid token.');
+            return sendResponse(res, 400, 'Incorrect OTP.');
         }
         const resetPasswordExpire = userData.resetPasswordExpire;
         const currentTime = new Date();
