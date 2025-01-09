@@ -51,7 +51,11 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         const userData = await findUserByEmail(email);
-        if (!userData || !await bcrypt.compare(password, userData.password)) {
+        console.log("userData =>", userData);
+        if(!userData){
+            return sendResponse(res, 401, `User not found with ${email} please create new account first`);
+        }
+        if (!await bcrypt.compare(password, userData.password)) {
             return sendResponse(res, 401, "Invalid credentials");
         }
         // const token = jwt.sign({ user: userData }, process.env.JWT_SECRET);

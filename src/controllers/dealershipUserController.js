@@ -52,7 +52,10 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await findUserByEmail(email);
-        if (!user || !await bcrypt.compare(password, user?.dealershipInformation.password)) {
+        if(!user){
+            return sendResponse(res, 401, `Dealership not found with ${email} please create new account first`);
+        }
+        if (!await bcrypt.compare(password, user?.dealershipInformation.password)) {
             return sendResponse(res, 401, "Invalid credentials");
         }
         const token = jwt.sign({ user: user }, process.env.JWT_SECRET);
