@@ -198,7 +198,7 @@ const resetPassword = async (req, res) => {
         userData.resetPasswordExpire = null;
 
         await userData.save();
-        return sendResponse(res, 400, 'Password reset successfully.');
+        return sendResponse(res, 200, 'Password reset successfully.');
     } catch (error) {
         console.error("Error while resetting password:", error.message);
         return sendResponse(res, 500, error.message);
