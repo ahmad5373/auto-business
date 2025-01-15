@@ -52,7 +52,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await findUserByEmail(email);
-        if(!user){
+        if (!user) {
             return sendResponse(res, 401, `Dealership not found with ${email} please create new account first`);
         }
         if (!await bcrypt.compare(password, user?.dealershipInformation.password)) {
@@ -88,6 +88,21 @@ const getUserWithId = async (req, res) => {
         return sendResponse(res, 200, "Dealership details fetched successfully", [], user);
     } catch (error) {
         return sendResponse(res, 500, `Error fetching DealershipUser: ${error.message}`);
+    }
+};
+
+const getLoggedInUser = async (req, res) => {
+    console.log("res.user =>", res.user);
+    const userId = res.user?._id
+    console.log("userId =>", userId);
+    try {
+        const user = await DealershipUser.findById(userId)
+        if (!user) {
+            return sendResponse(res, 404, "User not found");
+        }
+        return sendResponse(res, 200, "User details fetched successfully", [], user);
+    } catch (error) {
+        return sendResponse(res, 500, `Error fetching user: ${error.message}`);
     }
 };
 
@@ -237,6 +252,7 @@ module.exports = {
     loginUser,
     getAllUsers,
     getUserWithId,
+    getLoggedInUser,
     editUser,
     deleteUser,
     forgotPassword,

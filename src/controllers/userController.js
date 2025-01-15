@@ -99,6 +99,19 @@ const getUserWithId = async (req, res) => {
     }
 };
 
+const getLoggedInUser = async (req, res) => {
+    const userId = res.user?._id
+    try {
+        const user = await User.findById(userId)
+        if (!user) {
+            return sendResponse(res, 404, "User not found");
+        }
+        return sendResponse(res, 200, "User details fetched successfully", [], user);
+    } catch (error) {
+        return sendResponse(res, 500, `Error fetching user: ${error.message}`);
+    }
+};
+
 const editUser = async (req, res) => {
     const { id } = req.params;
     const { name, email, phone, profileImage, gender, address, city, fcm } = req.body;
@@ -330,6 +343,7 @@ module.exports = {
     loginUser,
     getAllUsers,
     getUserWithId,
+    getLoggedInUser,
     editUser,
     deleteUser,
     forgotPassword,
