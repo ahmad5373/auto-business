@@ -8,7 +8,10 @@ const createCar = async (req, res) => {
         if (loggedUser?._id.toString() !== req.body.user_id) {
             return sendResponse(res, 403, "Please login your account you can't create another user car listing");
         }
+        // const fairPrice = await evaluatePriceRating(car);
         const car = new Car(req.body);
+        car.fairPrice = await evaluatePriceRating(car)
+        // console.log("fairPrice =>", fairPrice);
         const savedCar = await car.save();
         return sendResponse(res, 201, "Car Created Successfully", [], savedCar);
     } catch (error) {
@@ -39,6 +42,40 @@ const getCarWithId = async (req, res) => {
     }
 };
 
+const evaluatePriceRating = async (car) => {
+    // Fetch comparable vehicles from the database
+    const comparableCars = await Car.find({
+      "basicData.make": car.basicData.make,
+      "basicData.model": car.basicData.model,
+      "basicData.fuelType": car.basicData.fuelType,
+      "basicData.transmission": car.basicData.transmission,
+      "basicData.country": car.basicData.country,
+      "basicData.city": car.basicData.city,
+      "basicData.firstRegistration": { 
+        $gte: new Date(new Date(car.basicData.firstRegistration).setFullYear(new Date(car.basicData.firstRegistration).getFullYear() - 1)),
+        $lte: new Date(new Date(car.basicData.firstRegistration).setFullYear(new Date(car.basicData.firstRegistration).getFullYear() + 1))
+      },
+      "basicData.mileage": { 
+        $gte: car.basicData.mileage - 10000, 
+        $lte: car.basicData.mileage + 10000 
+      }
+    });
+  
+    if (!comparableCars.length) return "No realistic price assessment possible";
+  
+    // Calculate average price and define ranges
+    const prices = comparableCars.map(c => c.paymentDetails.price);
+    const avgPrice = prices.reduce((a, b) => a + b, 0) / prices.length;
+    const lowFairPrice = avgPrice * 0.9;
+    const highFairPrice = avgPrice * 1.1;
+  
+    if (car.paymentDetails.price < avgPrice * 0.8) return "Very Good Price";
+    if (car.paymentDetails.price < lowFairPrice) return "Good Price";
+    if (car.paymentDetails.price <= highFairPrice) return "Fair Price";
+    if (car.paymentDetails.price <= avgPrice * 1.2) return "Increased Price";
+    return "High Price";
+  };
+  
 const getMyListing = async (req, res) => {
     try {
         const loggedUser = res.user;
