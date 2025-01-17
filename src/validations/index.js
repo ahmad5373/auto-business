@@ -108,8 +108,8 @@ const createCarValidation = [
   
   body('sellerDetails.name').not().isEmpty().withMessage("Seller name is required"),
   body('sellerDetails.email').not().isEmpty().isEmail().withMessage("Seller Valid email is required"),
-  body('sellerDetails.phone.countryCode').not().isEmpty().withMessage("Seller phone number country Code is required"),
-  body('sellerDetails.phone.number').not().isEmpty().withMessage("Seller phone umber is required"),
+  // body('sellerDetails.phone.countryCode').not().isEmpty().withMessage("Seller phone number country Code is required"),
+  // body('sellerDetails.phone').not().isEmpty().withMessage("Seller phone number is required"),
   body('imagesAndDescription.description').not().isEmpty().withMessage("description is required"),
   body('imagesAndDescription.images').isArray().withMessage("Images must be an array")
   .not().isEmpty().withMessage("At least one image is required")

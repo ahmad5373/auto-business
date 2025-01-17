@@ -72,10 +72,7 @@ const carSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     gender: { type: String },
-    phone: {
-      countryCode: { type: String },
-      number: { type: String },
-    },
+    phone: { type: String  },
     address: {
       street: { type: String },
       city: { type: String },
