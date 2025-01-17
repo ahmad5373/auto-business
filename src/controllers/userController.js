@@ -16,6 +16,23 @@ const createJwtToken = (user_id, role) => {
     return token;
 }
 
+
+const checkForRegisterUser = async (req, res) => {
+    const { email, password, repeatedPassword } = req.body;
+    try {
+        const existingUser = await findUserByEmail(email);
+        if (existingUser) {
+            return sendResponse(res, 400, "User already exists with this email try other");
+        }
+        if (password !== repeatedPassword) {
+            return sendResponse(res, 400, 'Password and repeated password do not match.');
+        }
+        return sendResponse(res, 200, "User is okay to proceed next");
+    } catch (error) {
+        return sendResponse(res, 500, `Error creating User: ${error.message}`);
+    }
+}
+
 const registerUser = async (req, res) => {
     const { email, password, repeatedPassword, name, gender, phoneNo, address, city, profileImage } = req.body;
     console.log("req.body =>", req.body);
@@ -338,6 +355,7 @@ const sendContactForm = async (req, res) => {
 
 
 module.exports = {
+    checkForRegisterUser,
     createJwtToken,
     registerUser,
     loginUser,

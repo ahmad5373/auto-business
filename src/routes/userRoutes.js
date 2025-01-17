@@ -1,10 +1,11 @@
 const express = require('express');
-const { registerUser, loginUser, getAllUsers, deleteUser, editUser, getUserWithId, forgotPassword, resetPassword, updatePassword, sendContactForm, checkOTP, getLoggedInUser } = require('../controllers/userController');
+const { registerUser, loginUser, getAllUsers, deleteUser, editUser, getUserWithId, forgotPassword, resetPassword, updatePassword, sendContactForm, checkOTP, getLoggedInUser, checkForRegisterUser } = require('../controllers/userController');
 const { protected } = require('../middleware/authenticate');
 const { createUserValidation, requestValidation, loginValidation, forgetPasswordValidation, verifyOTPValidation, resetPasswordValidation, changePasswordValidation, ContactEmailValidation } = require('../validations');
 
 const router = express.Router();
 
+router.post('/check-user',checkForRegisterUser);
 router.post('/register', createUserValidation, requestValidation, registerUser);
 router.post('/login', loginValidation, requestValidation, loginUser);
 router.get('/get-users', protected,  getAllUsers);
