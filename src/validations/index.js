@@ -55,7 +55,7 @@ const createDealerShipValidation = [
   // body('phone').not().isEmpty().withMessage("phone Number is required"),
   body('description').not().isEmpty().withMessage("description is required"),
   body('contactInformation.phoneNumber').isArray().withMessage("phone Number must be an array")
-  .not().isEmpty().withMessage("At least one phone Number is required")
+  .bail().custom((value) => value.length > 0).withMessage("At least one phone Number is required"),
 ]
 
 
@@ -112,7 +112,7 @@ const createCarValidation = [
   // body('sellerDetails.phone').not().isEmpty().withMessage("Seller phone number is required"),
   body('imagesAndDescription.description').not().isEmpty().withMessage("description is required"),
   body('imagesAndDescription.images').isArray().withMessage("Images must be an array")
-  .not().isEmpty().withMessage("At least one image is required")
+  .bail().custom((value) => value.length > 0).withMessage("At least one image is required"),
 ]
 
 
