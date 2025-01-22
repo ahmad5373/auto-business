@@ -21,7 +21,7 @@ const carSchema = new mongoose.Schema({
     model: { type: String, required: true },
     variant: { type: String },
     firstRegistration: { type: Date },
-    mileage: { type: Number, required: true },
+    mileage: { type: String, required: true },
     previousOwners: { type: Number },
     fuelType: { type: String, },
     power: { type: String },
