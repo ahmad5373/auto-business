@@ -6,6 +6,7 @@ const { sendResponse } = require('../utility/api');
 const sendMail = require('../middleware/SendMail');
 const { getUserById } = require('../models/helpers');
 dotenv.config();
+const admin = require('../config/firebaseAdmin')
 
 const hashPassword = async (password) => await bcrypt.hash(password, 10);
 const findUserByEmail = async (email) => await User.findOne({ email });
@@ -16,6 +17,33 @@ const createJwtToken = (user_id, role) => {
     return token;
 }
 
+const googleAuth = async (req, res) => {
+    const { idToken } = req.body;
+    try {
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const { name, email, picture } = decodedToken
+        let user = await findUserByEmail(email);
+        if (!user) {
+            user = await User.create({
+                email,
+                name,
+                profileImage: picture,
+                password: null, // No password for Google users
+            });
+        }
+        const userObj = {
+            _id: user?._id,
+            name: user?.name,
+            email: user?.email,
+            role: user?.role,
+            access_token: createJwtToken(user?._id, user?.role)
+        }
+        return sendResponse(res, 200, "Loggin successfully.", [], { user: userObj })
+    } catch (error) {
+        console.log('error :>> ', error);
+        return sendResponse(res, 500, `Error during login: ${error?.message}`);
+    }
+}
 
 const checkForRegisterUser = async (req, res) => {
     const { email, password, repeatedPassword } = req.body;
@@ -69,7 +97,7 @@ const loginUser = async (req, res) => {
     try {
         const userData = await findUserByEmail(email);
         console.log("userData =>", userData);
-        if(!userData){
+        if (!userData) {
             return sendResponse(res, 401, `User not found with ${email} please create new account first`);
         }
         if (!await bcrypt.compare(password, userData.password)) {
@@ -357,6 +385,7 @@ const sendContactForm = async (req, res) => {
 module.exports = {
     checkForRegisterUser,
     createJwtToken,
+    googleAuth,
     registerUser,
     loginUser,
     getAllUsers,
