@@ -28,7 +28,7 @@ const googleAuth = async (req, res) => {
                 email,
                 name,
                 profileImage: picture,
-                password: null, // No password for Google users
+                password: null, 
             });
         }
         const userObj = {
