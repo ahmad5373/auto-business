@@ -76,10 +76,9 @@ const SellerDetails = async (req, res) => {
 const getFollowerCount = async (req, res) => {
     try {
         const { dealershipId } = req.params;
+        const dealerships = await DealershipUser.findById(dealershipId);
+        if (!dealerships) return sendResponse(res, 404, "Dealership not found",)
         const followerCount = await Follow.countDocuments({ dealership: dealershipId })
-        if (!followerCount) {
-            return res.status(404).json({ message: 'No Follow by any one' });
-        }
         return sendResponse(res, 200, "Total Follower count is", [], { followerCount: followerCount });
     } catch (error) {
         return sendResponse(res, 500, `Error fetching dealership details: ${error.message}`);
