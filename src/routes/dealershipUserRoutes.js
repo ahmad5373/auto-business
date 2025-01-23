@@ -9,7 +9,7 @@ router.post('/register', registerDealershipValidation, requestValidation,  regis
 router.post('/create-dealership', createDealerShipValidation, requestValidation, createDealershipUser);
 router.post('/login', loginValidation, requestValidation, loginUser);
 router.get('/get-dealership', protected,  getAllUsers);
-router.get('/loggedUser', protected,  getLoggedInUser);
+router.get('/loggedInUser', protected,  getLoggedInUser);
 router.get('/:id', protected,  getUserWithId);
 router.put('/:id', protected,  editUser);
 router.delete('/:id', protected,  deleteUser);
