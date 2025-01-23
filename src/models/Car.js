@@ -28,17 +28,14 @@ const carSchema = new mongoose.Schema({
     power: { type: Number },
     powerUnit: { type: String },
     transmission: { type: String },
-    paymentType: { type: String }, 
     roadworthy: { type: Boolean },
     availabilty: { type: String },
     country: {type:String},
-    city: {type: String}
+    city: {type: String},
+    price: { type: Number }
 
   },
-  paymentDetails: {
-    price: { type: Number },
-    monthlyPayment: { type: String },
-  },
+
   technicalData: {
     type: { type: String },
     vehicleNumber: { type: String },
