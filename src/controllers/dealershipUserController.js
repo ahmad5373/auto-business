@@ -60,10 +60,10 @@ const loginUser = async (req, res) => {
         }
         const token = jwt.sign({ user: user }, process.env.JWT_SECRET);
         const response = {
-            user: user,
+            ...user.toObject(),
             access_token: createJwtToken(user?._id, user?.role)
         }
-        return sendResponse(res, 200, "Login Successful", [], response);
+        return sendResponse(res, 200, "Login Successful", [], {user: response});
     } catch (error) {
         return sendResponse(res, 500, `Error during login: ${error?.message}`);
     }
