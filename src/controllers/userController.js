@@ -62,8 +62,7 @@ const checkForRegisterUser = async (req, res) => {
 }
 
 const registerUser = async (req, res) => {
-    const { email, password, repeatedPassword, name, gender, phoneNo, address, city, profileImage } = req.body;
-    console.log("req.body =>", req.body);
+    const { email, password, repeatedPassword, name, gender, phone, address, city, profileImage } = req.body;
     try {
         const existingUser = await findUserByEmail(email);
         if (existingUser) {
@@ -72,8 +71,10 @@ const registerUser = async (req, res) => {
         if (password !== repeatedPassword) {
             return sendResponse(res, 400, 'Password and repeated password do not match.');
         }
+        const checkProfileImage = profileImage.includes('https');
+        var userImage = checkProfileImage ? profileImage : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSF5CbO3X-jDiHZFELGr4fUPbvNnf4UYY_NbA&s'
         const hashedPassword = await hashPassword(password);
-        const createdUser = await User.create({ email, password: hashedPassword, name, gender, phone: phoneNo, address, city, profileImage });
+        const createdUser = await User.create({ email, password: hashedPassword, name, gender, phone , address, city, profileImage: userImage });
         const userObj = {
             _id: createdUser?._id,
             name: createdUser?.name,
@@ -96,7 +97,6 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
         const userData = await findUserByEmail(email);
-        console.log("userData =>", userData);
         if (!userData) {
             return sendResponse(res, 401, `User not found with ${email} please create new account first`);
         }

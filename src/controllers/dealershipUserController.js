@@ -22,6 +22,7 @@ const createDealershipUser = async (req, res) => {
             ...req.body,
             dealershipInformation: {
                 ...req.body.dealershipInformation,
+                profileImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSF5CbO3X-jDiHZFELGr4fUPbvNnf4UYY_NbA&s',
                 password: hashedPassword
             }
         });
