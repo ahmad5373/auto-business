@@ -112,6 +112,7 @@ const loginUser = async (req, res) => {
             phone: userData?.phone,
             gender: userData?.gender,
             address: userData?.address,
+            profileImage: userData?.profileImage,
             city: userData?.city,
             access_token: createJwtToken(userData?._id, userData?.role)
         }
