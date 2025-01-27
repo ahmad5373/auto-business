@@ -114,6 +114,8 @@ const loginUser = async (req, res) => {
             address: userData?.address,
             profileImage: userData?.profileImage,
             city: userData?.city,
+            createdAt: userData?.createdAt,
+            updatedAt: userData?.updatedAt,
             access_token: createJwtToken(userData?._id, userData?.role)
         }
 
