@@ -5,7 +5,7 @@ const { sendResponse } = require('../utility/api');
 
 const FollowSeller = async (req, res) => {
     try {
-        const { userId: user, dealershipId: dealership } = req.body;
+        const { followerId: user, dealershipId: dealership } = req.body;
         const dealerships = await DealershipUser.findById(dealership);
         if (!dealerships) return sendResponse(res, 404, "Seller not found",)
         const follow = await Follow.findOneAndUpdate(
