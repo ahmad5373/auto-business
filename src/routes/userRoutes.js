@@ -9,7 +9,7 @@ router.post('/check-user',checkForRegisterUser);
 router.post('/register', createUserValidation, requestValidation, registerUser);
 router.post('/login', loginValidation, requestValidation, loginUser);
 router.post('/social/login',  googleAuth);
-router.get('/get-users', protected,  getAllUsers);
+router.get('/get-users',   getAllUsers);
 router.get('/loggedInUser', protected,  getLoggedInUser);
 router.get('/:id', protected,  getUserWithId);
 router.put('/:id', protected,  editUser);
